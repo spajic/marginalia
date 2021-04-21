@@ -19,6 +19,16 @@ module Marginalia
       self.marginalia_adapter = adapter
     end
 
+    3COMMAS_LINES_TO_IGNORE_REGEX = /\.rvm|gem|vendor\/|marginalia|rbenv/
+
+    def self.construct_3commas_comment
+      last_line = caller.detect do |line|
+        line !~ 3COMMAS_LINES_TO_IGNORE_REGEX
+      end
+      text = last_line&.split('/')&.last&.chop || ''
+      escape_sql_comment(text)
+    end
+
     def self.construct_comment
       ret = String.new
       self.components.each do |c|
